@@ -52,7 +52,6 @@
             var desc = response.data.description != undefined ? response.data.description : response.message;
             //alert("ERROR [" + response.status + "] " + desc);
             $("#pay-button").prop("disabled", false);
-            window.location = callback+'?result='+desc+'&success='+false;
         };
 
     });
@@ -71,12 +70,13 @@
             url: 'https://coupon-box-pay-api.azurewebsites.net/api/Payment/charge',
             dataType: 'json',
             async: false,
+            contentType: 'application/json',
             data: JSON.stringify(model),
             success: function (res) {
-                window.location = callback+'?result='+res.id+'&success='+true;
+                console.log(res)
             },
-            error: function(){
-                window.location = callback+'?result=No se pudo completar&success='+false;
+            error: function(error){
+                console.log(error)
             }
         })
     }
