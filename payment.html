@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
+<script type='text/javascript' src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+
+<script type="text/javascript">
+    function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    };
+        $(document).ready(function() {
+
+            OpenPay.setId('mzdtln0bmtms6o3kck8f');
+            OpenPay.setApiKey('pk_f0660ad5a39f4912872e24a7a660370c');
+            OpenPay.setSandboxMode(true);
+            var amount = getUrlParameter("amount");
+            var description = getUrlParameter("description");
+            $('#amount').val(amount);
+            $('#description').val(description);
+            var callback = getUrlParameter("callback");
+            //Se genera el id de dispositivo
+            var deviceSessionId = OpenPay.deviceData.setup("payment-form", "deviceIdHiddenFieldName");
+            
+            $('#pay-button').on('click', function(event) {
+                event.preventDefault();
+                $("#pay-button").prop( "disabled", true);
+                OpenPay.token.extractFormAndCreate('payment-form', sucess_callbak, error_callbak);                
+            });
+
+            var sucess_callbak = function(response) {
+              var token_id = response.data.id;
+              $('#token_id').val(token_id);
+              window.location = callback+'?result='+token_id+'&success='+true;
+              //$('#payment-form').submit();
+            };
+
+            var error_callbak = function(response) {
+                var desc = response.data.description != undefined ? response.data.description : response.message;
+                //alert("ERROR [" + response.status + "] " + desc);
+                $("#pay-button").prop("disabled", false);
+                window.location = callback+'?result='+desc+'&success='+false;
+            };
+
+        });
+    </script>
+
+<style>
+@charset "US-ASCII";
+@import "https://fonts.googleapis.com/css?family=Lato:300,400,700";
+* {
+    font-family: Lato;
+    font-size: 16px;
+    font-weight: 300;
+}
+::-webkit-input-placeholder {
+   font-style: italic;
+}
+:-moz-placeholder {
+   font-style: italic;
+}
+::-moz-placeholder {
+   font-style: italic;
+}
+:-ms-input-placeholder {  
+   font-style: italic;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+header{
+    background-color: #006f91;
+    color: white;
+    font-size: larger;
+    text-align: center;
+    padding: 20px 0;
+}
+.pymnt-cntnt{
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 15px;
+}
+.sctn-col{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+}
+.sctn-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.half{
+    width: 50%;
+    overflow: hidden;
+    margin-right: 5px;
+}
+input{
+    max-width: 100%;
+    border: none;
+    background: #e6e6e6;
+    padding: 10px;
+}
+.title{
+    font-size: larger;
+}
+footer{
+    padding: 15px;
+}
+footer * {
+    font-size: 12px;
+}
+.openpay{
+    align-items: start;
+    display: flex;
+}
+.btn-pay{
+    background: #006f91;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 5px;
+    margin: 0 auto;
+}
+</style>
+</head>
+<body>
+    <header>
+        <span class="title">Tarjeta de crédito o débito</span>
+    </header>
+    <div>
+        <form id="payment-form">
+            <input type="hidden" name="token_id" id="token_id">
+            <input type="hidden" name="amount" id="amount">
+            <input type="hidden" name="description" id="description">
+            <div class="pymnt-cntnt">
+                <div class="sctn-col">
+                    <label>Nombre del titular</label>
+                    <input type="text" placeholder="Como aparece en la tarjeta" autocomplete="off" data-openpay-card="holder_name">
+                </div>
+                <div class="sctn-col">
+                    <label>Número de tarjeta</label>
+                    <input type="number" maxlength="16" autocomplete="off" data-openpay-card="card_number">
+                </div>
+                <div class="sctn-col">
+                    <label>Fecha de expiración</label>
+                    <div class="sctn-row">
+                        <div class="half">
+                            <input type="number" maxlength="2" placeholder="Mes" data-openpay-card="expiration_month">
+                        </div>
+                        <div class="half">
+                            <input type="number" maxlength="4" placeholder="Año" data-openpay-card="expiration_year">
+                        </div>
+                    </div>
+                </div>
+                <div class="sctn-col cvv">
+                    <label>Código de seguridad</label>
+                    <input type="password" placeholder="3 dígitos" autocomplete="off" data-openpay-card="cvv2">
+                </div>
+                <div class="sctn-row">
+                    <a class="btn-pay" id="pay-button">Pagar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <footer style="display: flex;flex-direction: column;">
+        <div class="shield">Tus pagos se realizan de forma segura con encriptación de 256 bits</div>
+        <div class="openpay">Transacciones realizadas vía: 
+            <img style="width:100px;" src="https://www.openpay.mx/recursos/img/marketing_kit/logo_openpay1.png">
+        </div>
+    </footer>
+</body>
+</html>
