@@ -52,6 +52,7 @@
             var desc = response.data.description != undefined ? response.data.description : response.message;
             //alert("ERROR [" + response.status + "] " + desc);
             $("#pay-button").prop("disabled", false);
+            window.location.href = callback + "?success=false&result="+desc
         };
 
     });
@@ -73,10 +74,10 @@
             contentType: 'application/json',
             data: JSON.stringify(model),
             success: function (res) {
-                console.log(res)
+                window.location.href = callback + "?success=true&result="+res.id
             },
             error: function(error){
-                console.log(error)
+                window.location.href = callback + "?success=false&result="+error
             }
         })
     }
