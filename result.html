@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Result</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+    
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+    
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+        $(document).ready(function() {
+            var id = getUrlParameter('id');
+            $.ajax
+            ({
+                type: "GET",
+                url: 'https://coupon-box-pay-api.azurewebsites.net/api/Payment/charge/'+id,
+                dataType: 'json',
+                async: false,
+                contentType: 'application/json',
+                success: function (res) {
+                    console.log(res);
+                    if(res.status=="completed")
+                    window.location.href = callback + "?success=true&result="+id
+                },
+                error: function(error){
+                    console.log(res);
+                    window.location.href = callback + "?success=false&result="+error
+                }
+            })
+        });
+    
+    </script>
+</head>
+<body>
+    <p>Validando información...</p>
+</body>
+</html>

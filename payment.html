@@ -75,11 +75,13 @@
             data: JSON.stringify(model),
             success: function (res) {
                 console.log(res);
+                var uri = res.payment_method.url
+                window.location.href = uri;
                 //window.location.href = callback + "?success=true&result="+res.id
             },
             error: function(error){
                 console.log(res);
-                //window.location.href = callback + "?success=false&result="+error
+                window.location.href = callback + "?success=false&result="+error
             }
         })
     }
