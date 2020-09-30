@@ -22,6 +22,7 @@
             }
         };
         $(document).ready(function() {
+            var callback = "com.nuuxpiaani.cuponera";
             var id = getUrlParameter('id');
             $.ajax
             ({
@@ -32,8 +33,8 @@
                 contentType: 'application/json',
                 success: function (res) {
                     console.log(res);
-                    if(res.status=="completed")
-                    window.location.href = callback + "?success=true&result="+id
+                    if(res.status=="completed") window.location.href = callback + "?success=true&result="+id;
+                    else window.location.href = callback + "?success=false&result="+res.error_message
                 },
                 error: function(error){
                     console.log(res);
