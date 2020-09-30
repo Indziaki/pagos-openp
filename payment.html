@@ -52,7 +52,7 @@
             var desc = response.data.description != undefined ? response.data.description : response.message;
             //alert("ERROR [" + response.status + "] " + desc);
             $("#pay-button").prop("disabled", false);
-            window.location.href = callback + "?success=false&result="+desc
+            //window.location.href = callback + "?success=false&result="+desc
         };
 
     });
@@ -74,10 +74,12 @@
             contentType: 'application/json',
             data: JSON.stringify(model),
             success: function (res) {
-                window.location.href = callback + "?success=true&result="+res.id
+                console.log(res);
+                //window.location.href = callback + "?success=true&result="+res.id
             },
             error: function(error){
-                window.location.href = callback + "?success=false&result="+error
+                console.log(res);
+                //window.location.href = callback + "?success=false&result="+error
             }
         })
     }
